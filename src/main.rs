@@ -14,4 +14,13 @@ fn main() {
     assert!(num_bytes_read == 4);
     let number_of_items = u32::from_be_bytes(number_of_items_buffer);
     assert!(number_of_items == 10000);
+
+    for _ in 0..100 {
+        let mut label_buffer = [0];
+        let num_bytes_read = f.read(&mut label_buffer).unwrap();
+        assert!(num_bytes_read == 1);
+        let label = label_buffer[0];
+        assert!(label <= 9);
+        std::println!("{}", label)
+    }
 }
