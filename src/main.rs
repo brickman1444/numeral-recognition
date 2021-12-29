@@ -58,16 +58,28 @@ fn test() {
     std::println!("Load test data");
     let examples = load_data("data/t10k-labels.idx1-ubyte", "data/t10k-images.idx3-ubyte");
 
+    std::println!("Load neural network json");
     let mut f = std::fs::File::open(NEURAL_NETWORK_JSON_FILENAME).unwrap();
 
     let mut nn_json = std::string::String::new();
     f.read_to_string(&mut nn_json).unwrap();
 
+    std::println!("Load neural network from json");
     let neural_network = nn::NN::from_json(nn_json.as_str());
-    
-    let result = neural_network.run(test_pair.0.as_slice());
 
-    assert_eq!(result, test_pair.1);
+    std::println!("Begin test");
+
+    let mut fails = 0;
+
+    for test_pair in &examples {
+        let result = neural_network.run(test_pair.0.as_slice());
+
+        if evaluate_label_vector(&result) != evaluate_label_vector(&test_pair.1) {
+            fails += 1;
+        }
+    }
+
+    std::println!("Finished test. {0} cases. {1} failures.", examples.len(), fails);
 }
 
 fn evaluate_label_vector(label_vec : &std::vec::Vec<f64>) -> u8 {
