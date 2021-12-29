@@ -19,7 +19,7 @@ fn main() {
 
         let mut image_vec = std::vec::Vec::with_capacity(pixels_per_image);
         for pixel in &image_bytes[image_start_index..image_end_index] {
-            image_vec.push(*pixel as f64);
+            image_vec.push((*pixel as f64) / 255f64);
         }
         let output_vector = make_output_vector_from_label(*label);
         examples.push(( image_vec, output_vector));
@@ -28,12 +28,17 @@ fn main() {
     let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 10]); // TODO: Optimize neural network parameters here
 
     std::println!("Begin training");
+
+    let now = std::time::Instant::now();
+
     neural_network.train(&examples)
         .halt_condition( nn::HaltCondition::Epochs(1) )
         .log_interval( Some(1) )
         .rate( 0.3 )
         .go();
-    std::println!("Training finished");
+        
+    let elapsed_time = now.elapsed();
+    std::println!("Training finished. took {} seconds.", elapsed_time.as_secs());
 }
 
 fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
