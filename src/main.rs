@@ -41,7 +41,7 @@ fn train()
     let now = std::time::Instant::now();
 
     neural_network.train(&examples)
-        .halt_condition( nn::HaltCondition::Epochs(1) )
+        .halt_condition( nn::HaltCondition::Epochs(3) )
         .log_interval( Some(1) )
         .rate( 0.3 )
         .go();
