@@ -1,7 +1,33 @@
 use std::io::prelude::*;
 
-fn main() {
-    std::println!("Open files");
+fn main() -> std::result::Result<(), String> {
+
+    let args: Vec<String> = std::env::args().collect();
+    println!("Arguments: {:?}", args);
+
+    if args.len() < 2 {
+        return make_error_str("An argument wasn't passed in. Run with 'cargo run -- <argument>");
+    }
+
+    match args[1].as_str() {
+        "train" => train(),
+        _ => return make_error(std::format!("Didn't recognize argument: {0}", args[1]))
+    }
+
+    Ok(())
+}
+
+fn make_error_str(message : &'static str) -> std::result::Result<(), String> {
+    return std::result::Result::Err(std::string::String::from(message));
+}
+
+fn make_error(message : std::string::String) -> std::result::Result<(), String> {
+    return std::result::Result::Err(message);
+}
+
+fn train()
+{
+    std::println!("Open training files");
     let labels = open_labels("data/train-labels.idx1-ubyte");
     //open_labels("data/t10k-labels.idx1-ubyte");
 
@@ -25,7 +51,7 @@ fn main() {
         examples.push(( image_vec, output_vector));
     }
 
-    let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 10]); // TODO: Optimize neural network parameters here
+    let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 100, 10]); // TODO: Optimize neural network parameters here
 
     std::println!("Begin training");
 
@@ -39,6 +65,10 @@ fn main() {
         
     let elapsed_time = now.elapsed();
     std::println!("Training finished. took {} seconds.", elapsed_time.as_secs());
+
+    let nn_json = neural_network.to_json();
+
+    std::fs::write("network.json", nn_json).unwrap();
 }
 
 fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
