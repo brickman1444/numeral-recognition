@@ -1,5 +1,8 @@
 use std::io::prelude::*;
 
+const PIXELS_PER_IMAGE : usize = 28 * 28;
+const NEURAL_NETWORK_JSON_FILENAME : &str = "network.json";
+
 fn main() -> std::result::Result<(), String> {
 
     let args: Vec<String> = std::env::args().collect();
@@ -11,6 +14,7 @@ fn main() -> std::result::Result<(), String> {
 
     match args[1].as_str() {
         "train" => train(),
+        "test" => test(),
         _ => return make_error(std::format!("Didn't recognize argument: {0}", args[1]))
     }
 
@@ -27,31 +31,10 @@ fn make_error(message : std::string::String) -> std::result::Result<(), String> 
 
 fn train()
 {
-    std::println!("Open training files");
-    let labels = open_labels("data/train-labels.idx1-ubyte");
-    //open_labels("data/t10k-labels.idx1-ubyte");
+    std::println!("Load training data");
+    let examples = load_data("data/train-labels.idx1-ubyte", "data/train-images.idx3-ubyte");
 
-    let image_bytes = open_images("data/train-images.idx3-ubyte");
-    //open_images("data/t10k-images.idx3-ubyte");
-
-    let pixels_per_image = 28 * 28;
-
-    std::println!("Construct training data");
-    let mut examples : std::vec::Vec<(std::vec::Vec<f64>, std::vec::Vec<f64>)> = std::vec::Vec::with_capacity(labels.len());
-
-    for (item_index, label) in labels.iter().enumerate() {
-        let image_start_index = item_index * pixels_per_image;
-        let image_end_index = (item_index + 1) * pixels_per_image;
-
-        let mut image_vec = std::vec::Vec::with_capacity(pixels_per_image);
-        for pixel in &image_bytes[image_start_index..image_end_index] {
-            image_vec.push((*pixel as f64) / 255f64);
-        }
-        let output_vector = make_output_vector_from_label(*label);
-        examples.push(( image_vec, output_vector));
-    }
-
-    let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 100, 10]); // TODO: Optimize neural network parameters here
+    let mut neural_network = nn::NN::new(&[PIXELS_PER_IMAGE as u32, 100, 10]);
 
     std::println!("Begin training");
 
@@ -68,7 +51,62 @@ fn train()
 
     let nn_json = neural_network.to_json();
 
-    std::fs::write("network.json", nn_json).unwrap();
+    std::fs::write(NEURAL_NETWORK_JSON_FILENAME, nn_json).unwrap();
+}
+
+fn test() {
+    std::println!("Load test data");
+    let examples = load_data("data/t10k-labels.idx1-ubyte", "data/t10k-images.idx3-ubyte");
+
+    let mut f = std::fs::File::open(NEURAL_NETWORK_JSON_FILENAME).unwrap();
+
+    let mut nn_json = std::string::String::new();
+    f.read_to_string(&mut nn_json).unwrap();
+
+    let neural_network = nn::NN::from_json(nn_json.as_str());
+    
+    let result = neural_network.run(test_pair.0.as_slice());
+
+    assert_eq!(result, test_pair.1);
+}
+
+fn evaluate_label_vector(label_vec : &std::vec::Vec<f64>) -> u8 {
+    let (index_of_max_value, _) = // Second value is max value
+        label_vec.iter()
+            .enumerate()
+            .fold((0, label_vec[0]), |(idx_max, val_max), (idx, val)| {
+                if &val_max > val {
+                    (idx_max, val_max)
+                } else {
+                    (idx, *val)
+                }
+            });
+    return index_of_max_value as u8;
+}
+
+fn load_data(labels_file_path : &str, images_file_path : &str) -> std::vec::Vec<(std::vec::Vec<f64>, std::vec::Vec<f64>)> {
+
+    std::println!("Open files");
+    let labels = open_labels(labels_file_path);
+
+    let image_bytes = open_images(images_file_path);
+
+    std::println!("Transform data");
+    let mut examples : std::vec::Vec<(std::vec::Vec<f64>, std::vec::Vec<f64>)> = std::vec::Vec::with_capacity(labels.len());
+
+    for (item_index, label) in labels.iter().enumerate() {
+        let image_start_index = item_index * PIXELS_PER_IMAGE;
+        let image_end_index = (item_index + 1) * PIXELS_PER_IMAGE;
+
+        let mut image_vec = std::vec::Vec::with_capacity(PIXELS_PER_IMAGE);
+        for pixel in &image_bytes[image_start_index..image_end_index] {
+            image_vec.push((*pixel as f64) / 255f64);
+        }
+        let output_vector = make_output_vector_from_label(*label);
+        examples.push(( image_vec, output_vector));
+    }
+
+    return examples;
 }
 
 fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
