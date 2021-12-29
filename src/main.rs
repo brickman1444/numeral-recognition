@@ -21,14 +21,25 @@ fn main() {
         for pixel in &image_bytes[image_start_index..image_end_index] {
             image_vec.push(*pixel as f64);
         }
-        examples.push(( image_vec, vec![*label as f64]));
+        let output_vector = make_output_vector_from_label(*label);
+        examples.push(( image_vec, output_vector));
     }
 
-    let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 10, 1]); // TODO: Optimize neural network parameters here
+    let mut neural_network = nn::NN::new(&[pixels_per_image as u32, 10]); // TODO: Optimize neural network parameters here
 
     std::println!("Begin training");
-    neural_network.train(&examples).go();
+    neural_network.train(&examples)
+        .halt_condition( nn::HaltCondition::Epochs(1) )
+        .log_interval( Some(1) )
+        .rate( 0.3 )
+        .go();
     std::println!("Training finished");
+}
+
+fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
+    let mut vector = vec![0f64; 10];
+    vector[label as usize] = 1f64;
+    return vector;
 }
 
 fn open_labels(path: &str) -> Vec<u8> {
