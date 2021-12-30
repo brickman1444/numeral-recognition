@@ -5,7 +5,8 @@
         currX = 0,
         prevY = 0,
         currY = 0,
-        dot_flag = false;
+        fill_style = "black",
+        line_width = 7;
     
     function init() {
         canvas = document.getElementById('can');
@@ -31,8 +32,8 @@
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(currX, currY);
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 7;
+        ctx.strokeStyle = fill_style;
+        ctx.lineWidth = line_width;
         ctx.stroke();
         ctx.closePath();
     }
@@ -50,14 +51,12 @@
             currY = e.clientY - canvas.offsetTop;
     
             flag = true;
-            dot_flag = true;
-            if (dot_flag) {
-                ctx.beginPath();
-                ctx.fillStyle = "black";
-                ctx.fillRect(currX, currY, 2, 2);
-                ctx.closePath();
-                dot_flag = false;
-            }
+
+            // Immediately draw something in case the mouse is released before it's moved
+            ctx.beginPath();
+            ctx.fillStyle = fill_style;
+            ctx.fillRect(currX, currY, line_width, line_width);
+            ctx.closePath();
         }
         if (res == 'up' || res == "out") {
             flag = false;
