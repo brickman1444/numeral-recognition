@@ -1,6 +1,8 @@
 <html>
     <script type="text/javascript">
-    var canvas, ctx, flag = false,
+    var canvas = null,
+        ctx = null,
+        is_mouse_down = false,
         prevX = 0,
         currX = 0,
         prevY = 0,
@@ -14,18 +16,10 @@
         w = canvas.width;
         h = canvas.height;
     
-        canvas.addEventListener("mousemove", function (e) {
-            findxy('move', e)
-        }, false);
-        canvas.addEventListener("mousedown", function (e) {
-            findxy('down', e)
-        }, false);
-        canvas.addEventListener("mouseup", function (e) {
-            findxy('up', e)
-        }, false);
-        canvas.addEventListener("mouseout", function (e) {
-            findxy('out', e)
-        }, false);
+        canvas.addEventListener("mousemove", on_mouse_move, false);
+        canvas.addEventListener("mousedown", on_mouse_down, false);
+        canvas.addEventListener("mouseup", on_mouse_up, false);
+        canvas.addEventListener("mouseout", on_mouse_up, false);
     }
     
     function draw() {
@@ -40,35 +34,32 @@
     
     function erase() {
         ctx.clearRect(0, 0, w, h);
-        document.getElementById("canvasimg").style.display = "none";
+    }
+
+    function on_mouse_down(event) {
+        currX = event.clientX - canvas.offsetLeft;
+        currY = event.clientY - canvas.offsetTop;
+
+        is_mouse_down = true;
+
+        // Immediately draw something in case the mouse is released before it's moved
+        ctx.beginPath();
+        ctx.fillStyle = fill_style;
+        ctx.fillRect(currX, currY, line_width, line_width);
+        ctx.closePath();
+    }
+
+    function on_mouse_up(event) {
+        is_mouse_down = false;
     }
     
-    function findxy(res, e) {
-        if (res == 'down') {
+    function on_mouse_move(event) {
+        if (is_mouse_down) {
             prevX = currX;
             prevY = currY;
-            currX = e.clientX - canvas.offsetLeft;
-            currY = e.clientY - canvas.offsetTop;
-    
-            flag = true;
-
-            // Immediately draw something in case the mouse is released before it's moved
-            ctx.beginPath();
-            ctx.fillStyle = fill_style;
-            ctx.fillRect(currX, currY, line_width, line_width);
-            ctx.closePath();
-        }
-        if (res == 'up' || res == "out") {
-            flag = false;
-        }
-        if (res == 'move') {
-            if (flag) {
-                prevX = currX;
-                prevY = currY;
-                currX = e.clientX - canvas.offsetLeft;
-                currY = e.clientY - canvas.offsetTop;
-                draw();
-            }
+            currX = event.clientX - canvas.offsetLeft;
+            currY = event.clientY - canvas.offsetTop;
+            draw();
         }
     }
     </script>
