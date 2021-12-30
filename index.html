@@ -62,10 +62,16 @@
             draw();
         }
     }
+
+    function recognize() {
+        console.log("recognize from javascript")
+    }
     </script>
     <body onload="init()">
         <canvas id="can" width="400" height="400" style="border:2px solid;"></canvas>
         </br>
-        <input type="button" value="clear" id="clr" size="23" onclick="erase()">
+        <input type="button" value="Clear" id="clr" onclick="erase()">
+        <input type="button" value="Recognize" id="recognize" onclick="recognize()">
+        <div>Recognized Numeral: ?</div>
     </body>
     </html>
