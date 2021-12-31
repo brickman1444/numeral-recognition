@@ -6,5 +6,10 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# Use a fork of RustNN which relies on serde instead of rustc-serialize which doesn't compile for WebAssembly
 [dependencies]
-nn = "0.1.6"
+nn = { git = "https://github.com/FlixCoder/RustNN", rev = "4af774e92e2d357cdfd400fa620e4a69a3ab8f98" }
+wasm-bindgen = "0.2"
+
+[lib]
+crate-type = ["cdylib", "rlib"]

@@ -34,7 +34,7 @@ fn train()
     std::println!("Load training data");
     let examples = load_data("data/train-labels.idx1-ubyte", "data/train-images.idx3-ubyte");
 
-    let mut neural_network = nn::NN::new(&[PIXELS_PER_IMAGE as u32, 100, 10]);
+    let mut neural_network = nn::NN::new(&[PIXELS_PER_IMAGE as u32, 100, 10], nn::Activation::Sigmoid, nn::Activation::Sigmoid);
 
     std::println!("Begin training");
 
