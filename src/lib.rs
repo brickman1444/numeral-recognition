@@ -191,3 +191,8 @@ extern {
 pub fn greet() {
     alert("Hello, wasm-game-of-life!");
 }
+
+#[wasm_bindgen]
+pub fn recognize(neural_network_json_text : &str) -> u8 {
+    return 3;
+}

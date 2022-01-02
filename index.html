@@ -1,7 +1,7 @@
 <html>
     <script type="module">
 
-    import { default as wasm_init, greet } from "./pkg/numeral_recognition.js";
+    import { default as wasm_init, recognize as wasm_recognize } from "./pkg/numeral_recognition.js";
 
     var canvas = null,
         ctx = null,
@@ -84,7 +84,10 @@
     }
 
     function recognize() {
-        console.log("recognize from javascript")
+        console.log("recognize from javascript");
+        
+        let text = "Recognized Numeral: " + wasm_recognize("");
+        document.getElementById('recognized-numeral').textContent = text;
     }
     </script>
     <body>
@@ -92,6 +95,6 @@
         </br>
         <input type="button" value="Clear" id="clear-button">
         <input type="button" value="Recognize" id="recognize-button">
-        <div>Recognized Numeral: ?</div>
+        <div id="recognized-numeral">Recognized Numeral: ?</div>
     </body>
     </html>
