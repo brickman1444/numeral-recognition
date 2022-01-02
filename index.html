@@ -11,7 +11,7 @@
         prevY = 0,
         currY = 0,
         fill_style = "black",
-        line_width = 7,
+        line_width = 2,
         w = 0,
         h = 0,
         neural_network_json_text = "";
@@ -57,8 +57,8 @@
     }
 
     function on_mouse_down(event) {
-        currX = event.clientX - canvas.offsetLeft;
-        currY = event.clientY - canvas.offsetTop;
+        currX = (event.clientX - canvas.offsetLeft) / parseFloat(canvas.style.width) * canvas.width;
+        currY = (event.clientY - canvas.offsetTop) / parseFloat(canvas.style.height) * canvas.height;
 
         is_mouse_down = true;
 
@@ -77,8 +77,9 @@
         if (is_mouse_down) {
             prevX = currX;
             prevY = currY;
-            currX = event.clientX - canvas.offsetLeft;
-            currY = event.clientY - canvas.offsetTop;
+
+            currX = (event.clientX - canvas.offsetLeft) / parseFloat(canvas.style.width) * canvas.width;
+            currY = (event.clientY - canvas.offsetTop) / parseFloat(canvas.style.height) * canvas.height;
             draw();
         }
     }
@@ -105,7 +106,7 @@
     }
     </script>
     <body>
-        <canvas id="can" width="28" height="28" style="border:2px solid;"></canvas>
+        <canvas id="can" width="28" height="28" style="border:2px solid; width:400px; height:400px;"></canvas>
         </br>
         <input type="button" value="Clear" id="clear-button">
         <input type="button" value="Recognize" id="recognize-button">
