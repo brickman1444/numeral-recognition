@@ -94,12 +94,8 @@
     }
 
     function recognize() {
-        console.log("recognize from javascript");
-
         let imageData = ctx.getImageData(0, 0, w, h);
         let rgba_bytes_array = imageData.data;
-
-        console.log(rgba_bytes_array);
 
         // Stride through and save off Alpha bytes as the values to send.
         let input_data = new Uint8Array(rgba_bytes_array.length / 4);
@@ -107,8 +103,6 @@
         {
             input_data[Math.floor(byte_index / 4)] = rgba_bytes_array[byte_index];
         }
-
-        console.log(input_data);
 
         let text = "Recognized Numeral: " + wasm_recognize(neural_network_json_text, input_data);
         document.getElementById('recognized-numeral').textContent = text;
