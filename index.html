@@ -13,7 +13,8 @@
         fill_style = "black",
         line_width = 7,
         w = 0,
-        h = 0;
+        h = 0,
+        neural_network_json_text = "";
 
     window.addEventListener('DOMContentLoaded', init); // Run when page loads. We can't use <body onload="init"> with a module script
     
@@ -23,13 +24,22 @@
         ctx = canvas.getContext("2d");
         w = canvas.width;
         h = canvas.height;
+
+        document.getElementById("recognize-button").onclick = recognize;
+        document.getElementById("clear-button").onclick = erase;
     
         canvas.addEventListener("mousemove", on_mouse_move, false);
         canvas.addEventListener("mousedown", on_mouse_down, false);
         canvas.addEventListener("mouseup", on_mouse_up, false);
         canvas.addEventListener("mouseout", on_mouse_up, false);
 
-        wasm_init().then(function() { greet() });
+        wasm_init().then(function() { console.log("Initialized web assmebly module."); });
+
+        fetch("./network.json")
+        .then(response => {
+        return response.text();
+        })
+        .then(text => neural_network_json_text = text);
     }
     
     function draw() {
@@ -80,8 +90,8 @@
     <body>
         <canvas id="can" width="400" height="400" style="border:2px solid;"></canvas>
         </br>
-        <input type="button" value="Clear" id="clr" onclick="erase()">
-        <input type="button" value="Recognize" id="recognize" onclick="recognize()">
+        <input type="button" value="Clear" id="clear-button">
+        <input type="button" value="Recognize" id="recognize-button">
         <div>Recognized Numeral: ?</div>
     </body>
     </html>
