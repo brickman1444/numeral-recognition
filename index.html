@@ -56,16 +56,24 @@
         ctx.clearRect(0, 0, w, h);
     }
 
+    function get_canvas_x_of_mouse(event) {
+        return (event.clientX - canvas.offsetLeft) / parseFloat(canvas.style.width) * canvas.width;
+    }
+
+    function get_canvas_y_of_mouse(event) {
+        return (event.clientY - canvas.offsetTop) / parseFloat(canvas.style.height) * canvas.height;
+    }
+
     function on_mouse_down(event) {
-        currX = (event.clientX - canvas.offsetLeft) / parseFloat(canvas.style.width) * canvas.width;
-        currY = (event.clientY - canvas.offsetTop) / parseFloat(canvas.style.height) * canvas.height;
+        currX = get_canvas_x_of_mouse(event);
+        currY = get_canvas_y_of_mouse(event);
 
         is_mouse_down = true;
 
         // Immediately draw something in case the mouse is released before it's moved
         ctx.beginPath();
         ctx.fillStyle = fill_style;
-        ctx.fillRect(currX, currY, line_width, line_width);
+        ctx.fillRect(currX - (0.5 * line_width), currY - (0.5 * line_width), line_width, line_width);
         ctx.closePath();
     }
 
@@ -78,8 +86,8 @@
             prevX = currX;
             prevY = currY;
 
-            currX = (event.clientX - canvas.offsetLeft) / parseFloat(canvas.style.width) * canvas.width;
-            currY = (event.clientY - canvas.offsetTop) / parseFloat(canvas.style.height) * canvas.height;
+            currX = get_canvas_x_of_mouse(event);
+            currY = get_canvas_y_of_mouse(event);
             draw();
         }
     }
