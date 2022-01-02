@@ -1,4 +1,5 @@
 use std::io::prelude::*;
+use wasm_bindgen::prelude::*;
 
 const PIXELS_PER_IMAGE : usize = 28 * 28;
 const NEURAL_NETWORK_JSON_FILENAME : &str = "network.json";
@@ -179,4 +180,14 @@ fn print_image(buffer: &Vec<f64>, number_of_rows: u32, number_of_columns: u32) {
         }
         std::print!("\n");
     }
+}
+
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn greet() {
+    alert("Hello, wasm-game-of-life!");
 }

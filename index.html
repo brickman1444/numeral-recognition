@@ -1,5 +1,8 @@
 <html>
-    <script type="text/javascript">
+    <script type="module">
+
+    import numeral_recognition from "./pkg/numeral_recognition.js";
+
     var canvas = null,
         ctx = null,
         is_mouse_down = false,
@@ -8,9 +11,14 @@
         prevY = 0,
         currY = 0,
         fill_style = "black",
-        line_width = 7;
+        line_width = 7,
+        w = 0,
+        h = 0;
+
+    window.addEventListener('DOMContentLoaded', init); // Run when page loads. We can't use <body onload="init"> with a module script
     
     function init() {
+
         canvas = document.getElementById('can');
         ctx = canvas.getContext("2d");
         w = canvas.width;
@@ -20,6 +28,8 @@
         canvas.addEventListener("mousedown", on_mouse_down, false);
         canvas.addEventListener("mouseup", on_mouse_up, false);
         canvas.addEventListener("mouseout", on_mouse_up, false);
+
+        numeral_recognition();
     }
     
     function draw() {
@@ -67,7 +77,7 @@
         console.log("recognize from javascript")
     }
     </script>
-    <body onload="init()">
+    <body>
         <canvas id="can" width="400" height="400" style="border:2px solid;"></canvas>
         </br>
         <input type="button" value="Clear" id="clr" onclick="erase()">
