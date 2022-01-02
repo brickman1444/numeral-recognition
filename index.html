@@ -112,10 +112,15 @@
         <title>Numeral Recognition</title>
     </head>
     <body>
+        <h1>Numeral Recognition</h1>
+        <p>Draw a 0-9 numeral in the box and then hit the Recognize button.</p>
         <canvas id="can" width="28" height="28" style="border:2px solid; width:400px; height:400px;"></canvas>
         </br>
         <input type="button" value="Clear" id="clear-button">
         <input type="button" value="Recognize" id="recognize-button">
         <div id="recognized-numeral">Recognized Numeral: ?</div>
+        <h2>How Does it Work?</h2>
+        <p>This site uses a neural network to recognize the numerals. The neural network was trained on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST data set</a> of hand drawn numerals. The trained network was serialized into JSON. That JSON is instantiated at runtime by a Web Assmebly module and runs using the data from the HTML canvas. The result is piped back to the web page with Javascript.</p>
+        <p>View the <a href="https://github.com/brickman1444/numeral-recognition">Source Code</a> on GitHub.</p>
     </body>
     </html>
