@@ -13,3 +13,7 @@ wasm-bindgen = "0.2"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "bin"
+path = "src/lib.rs"
