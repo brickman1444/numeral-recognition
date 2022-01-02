@@ -1,7 +1,7 @@
 <html>
     <script type="module">
 
-    import numeral_recognition from "./pkg/numeral_recognition.js";
+    import { default as wasm_init, greet } from "./pkg/numeral_recognition.js";
 
     var canvas = null,
         ctx = null,
@@ -29,7 +29,7 @@
         canvas.addEventListener("mouseup", on_mouse_up, false);
         canvas.addEventListener("mouseout", on_mouse_up, false);
 
-        numeral_recognition();
+        wasm_init().then(function() { greet() });
     }
     
     function draw() {
