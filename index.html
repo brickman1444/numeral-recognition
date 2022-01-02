@@ -33,7 +33,7 @@
         canvas.addEventListener("mouseup", on_mouse_up, false);
         canvas.addEventListener("mouseout", on_mouse_up, false);
 
-        wasm_init().then(function() { console.log("Initialized web assmebly module."); });
+        wasm_init().then(function() { console.log("Initialized web assembly module."); });
 
         fetch("./network.json")
         .then(response => {
