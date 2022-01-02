@@ -193,6 +193,17 @@ pub fn greet() {
 }
 
 #[wasm_bindgen]
-pub fn recognize(neural_network_json_text : &str) -> u8 {
-    return 3;
+pub fn recognize(neural_network_json_text : &str, image_bytes: &[u8]) -> u8 {
+
+    std::println!("Load neural network from json");
+    let neural_network = nn::NN::from_json(neural_network_json_text);
+
+    let mut input_vec = std::vec::Vec::with_capacity(PIXELS_PER_IMAGE);
+    for pixel_index in 0..PIXELS_PER_IMAGE {
+        input_vec.push((image_bytes[pixel_index] as f64) / 255f64);
+    }
+
+    let result_vector = neural_network.run(input_vec.as_slice());
+
+    return evaluate_label_vector(&result_vector);
 }
