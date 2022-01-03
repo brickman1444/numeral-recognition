@@ -32,6 +32,9 @@
         canvas.addEventListener("mousedown", on_mouse_down, false);
         canvas.addEventListener("mouseup", on_mouse_up, false);
         canvas.addEventListener("mouseout", on_mouse_up, false);
+        canvas.addEventListener("touchstart", on_mouse_down, false);
+        canvas.addEventListener("touchmove", on_touch_move, false);
+        canvas.addEventListener("touchend", on_mouse_up, false);
 
         wasm_init().then(function() { console.log("Initialized web assembly module."); });
 
@@ -90,6 +93,12 @@
             currX = get_canvas_x_of_mouse(event);
             currY = get_canvas_y_of_mouse(event);
             draw();
+        }
+    }
+
+    function on_touch_move(event) {
+        for (let touch_index = 0; touch_index < event.changedTouches.length; touch_index++) {
+            on_mouse_move(event.changedTouches[touch_index]);
         }
     }
 
