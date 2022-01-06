@@ -199,16 +199,6 @@ fn print_image(buffer: &Vec<f64>, number_of_rows: u32, number_of_columns: u32) {
 }
 
 #[wasm_bindgen]
-extern "C" {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, wasm-game-of-life!");
-}
-
-#[wasm_bindgen]
 pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
     std::println!("Load neural network from json");
     let neural_network = nn::NN::from_json(neural_network_json_text);
