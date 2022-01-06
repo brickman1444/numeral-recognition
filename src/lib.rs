@@ -22,11 +22,11 @@ fn main() -> std::result::Result<(), String> {
 }
 
 fn make_error_str(message: &'static str) -> std::result::Result<(), String> {
-    return std::result::Result::Err(std::string::String::from(message));
+    std::result::Result::Err(std::string::String::from(message))
 }
 
 fn make_error(message: std::string::String) -> std::result::Result<(), String> {
-    return std::result::Result::Err(message);
+    std::result::Result::Err(message)
 }
 
 fn train() {
@@ -96,7 +96,7 @@ fn test() {
     );
 }
 
-fn evaluate_label_vector(label_vec: &std::vec::Vec<f64>) -> u8 {
+fn evaluate_label_vector(label_vec: &[f64]) -> u8 {
     let (index_of_max_value, _) = // Second value is max value
         label_vec.iter()
             .enumerate()
@@ -107,7 +107,7 @@ fn evaluate_label_vector(label_vec: &std::vec::Vec<f64>) -> u8 {
                     (idx, *val)
                 }
             });
-    return index_of_max_value as u8;
+    index_of_max_value as u8
 }
 
 fn load_data(
@@ -135,13 +135,13 @@ fn load_data(
         examples.push((image_vec, output_vector));
     }
 
-    return examples;
+    examples
 }
 
 fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
     let mut vector = vec![0f64; 10];
     vector[label as usize] = 1f64;
-    return vector;
+    vector
 }
 
 fn open_labels(path: &str) -> Vec<u8> {
@@ -156,7 +156,7 @@ fn open_labels(path: &str) -> Vec<u8> {
     let mut bytes = Vec::new();
     f.read_to_end(&mut bytes).unwrap();
 
-    return bytes;
+    bytes
 }
 
 fn open_images(path: &str) -> Vec<u8> {
@@ -177,25 +177,14 @@ fn open_images(path: &str) -> Vec<u8> {
     let mut bytes = Vec::new();
     f.read_to_end(&mut bytes).unwrap();
 
-    return bytes;
+    bytes
 }
 
 fn read_u32(file: &mut std::fs::File) -> u32 {
     let mut buffer = [0; 4];
     let num_bytes_read = file.read(&mut buffer).unwrap();
     assert!(num_bytes_read == 4);
-    return u32::from_be_bytes(buffer);
-}
-
-fn print_image(buffer: &Vec<f64>, number_of_rows: u32, number_of_columns: u32) {
-    std::println!("Image:");
-    for row in 0..number_of_rows {
-        for column in 0..number_of_columns {
-            let index = (row * number_of_columns + column) as usize;
-            std::print!("{:3} ", buffer[index]);
-        }
-        std::print!("\n");
-    }
+    u32::from_be_bytes(buffer)
 }
 
 #[wasm_bindgen]
@@ -204,11 +193,11 @@ pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
     let neural_network = nn::NN::from_json(neural_network_json_text);
 
     let mut input_vec = std::vec::Vec::with_capacity(PIXELS_PER_IMAGE);
-    for pixel_index in 0..PIXELS_PER_IMAGE {
-        input_vec.push((image_bytes[pixel_index] as f64) / 255f64);
+    for item in image_bytes.iter().take(PIXELS_PER_IMAGE) {
+        input_vec.push((*item as f64) / 255f64);
     }
 
     let result_vector = neural_network.run(input_vec.as_slice());
 
-    return evaluate_label_vector(&result_vector);
+    evaluate_label_vector(&result_vector)
 }
