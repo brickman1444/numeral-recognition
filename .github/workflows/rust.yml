@@ -19,4 +19,5 @@ jobs:
     - name: Build Local Binary
       run: cargo build --release --verbose
     - name: Build WebAssembly Module and JavaScript
+      uses: jetli/wasm-pack-action@v0.3.0
       run: wasm-pack build --target web
