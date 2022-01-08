@@ -16,4 +16,4 @@ crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "bin"
-path = "src/lib.rs"
+path = "src/main.rs"
