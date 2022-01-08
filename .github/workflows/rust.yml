@@ -22,3 +22,5 @@ jobs:
       uses: jetli/wasm-pack-action@v0.3.0
     - name: Build WebAssembly Module and Generate JavaScript
       run: wasm-pack build --target web
+    - name: Rust Format Check
+      run: cargo fmt -- --check
