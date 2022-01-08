@@ -1,4 +1,3 @@
-
 use wasm_bindgen::prelude::*;
 
 pub const PIXELS_PER_IMAGE: usize = 28 * 28;

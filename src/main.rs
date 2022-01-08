@@ -1,7 +1,5 @@
-
-
-use std::io::prelude::*;
 use numeral_recognition::*;
+use std::io::prelude::*;
 
 const NEURAL_NETWORK_JSON_FILENAME: &str = "network.json";
 
