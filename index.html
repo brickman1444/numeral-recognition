@@ -57,7 +57,10 @@
     
     function erase() {
         ctx.clearRect(0, 0, w, h);
-        document.getElementById('recognized-numeral').textContent = "Recognized Numeral: ?";
+        document.getElementById('first-guess').textContent = "First Guess: ?";
+        document.getElementById('first-guess-confidence').textContent = "Confidence: ?";
+        document.getElementById('second-guess').textContent = "Second Guess: ?";
+        document.getElementById('second-guess-confidence').textContent = "Confidence: ?";
     }
 
     function get_canvas_x_of_mouse(event) {
@@ -115,8 +118,10 @@
 
         let results = wasm_recognize(neural_network_json_text, input_data);
         console.log(results);
-        let text = "Recognized Numeral: " + results.first_guess;
-        document.getElementById('recognized-numeral').textContent = text;
+        document.getElementById('first-guess').textContent = "First Guess: " + results.first_guess;
+        document.getElementById('first-guess-confidence').textContent = "Confidence: " + results.first_guess_confidence;
+        document.getElementById('second-guess').textContent = "Second Guess: " + results.second_guess;
+        document.getElementById('second-guess-confidence').textContent = "Confidence: " + results.second_guess_confidence;
     }
     </script>
     <head>
@@ -129,9 +134,12 @@
         </br>
         <input type="button" value="Clear" id="clear-button">
         <input type="button" value="Recognize" id="recognize-button">
-        <div id="recognized-numeral">Recognized Numeral: ?</div>
+        <div id="first-guess">First Guess: ?</div>
+        <div id="first-guess-confidence">Confidence: ?</div>
+        <div id="second-guess">Second Guess: ?</div>
+        <div id="second-guess-confidence">Second Guess Confidence: ?</div>
         <h2>How Does it Work?</h2>
-        <p>This site uses a neural network to recognize the numerals. The neural network was trained on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST data set</a> of hand drawn numerals. The trained network was serialized into JSON. That JSON is instantiated at runtime by a Web Assmebly module and runs using the data from the HTML canvas. The result is piped back to the web page with Javascript.</p>
+        <p>This site uses a neural network to recognize the numerals. The neural network was trained on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST data set</a> of hand drawn numerals. The trained network was serialized into JSON. That JSON is instantiated at runtime by a Web Assembly module and runs using the data from the HTML canvas. The result is piped back to the web page with Javascript.</p>
         <p>View the <a href="https://github.com/brickman1444/numeral-recognition">Source Code</a> on GitHub.</p>
     </body>
     </html>

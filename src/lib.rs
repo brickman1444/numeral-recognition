@@ -23,26 +23,19 @@ pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> Recognit
 
     let result_vector = neural_network.run(input_vec.as_slice());
 
-    let first_guess = evaluate_label_vector(&result_vector);
-
-    RecognitionResults {
-        first_guess: first_guess,
-        first_guess_confidence: 0.5f64,
-        second_guess: 10,
-        second_guess_confidence: 0.2f64,
-    }
+    evaluate_label_vector(&result_vector)
 }
 
-pub fn evaluate_label_vector(label_vec: &[f64]) -> u8 {
-    let (index_of_max_value, _) = // Second value is max value
-        label_vec.iter()
-            .enumerate()
-            .fold((0, label_vec[0]), |(idx_max, val_max), (idx, val)| {
-                if &val_max > val {
-                    (idx_max, val_max)
-                } else {
-                    (idx, *val)
-                }
-            });
-    index_of_max_value as u8
+pub fn evaluate_label_vector(label_vec: &[f64]) -> RecognitionResults {
+
+    let mut indices_and_confidence: Vec<(usize, &f64)> = label_vec.iter().enumerate().collect();
+
+    indices_and_confidence.sort_by(|a, b| b.1.partial_cmp(a.1).unwrap());
+
+    RecognitionResults {
+        first_guess: indices_and_confidence[0].0 as u8,
+        first_guess_confidence: *indices_and_confidence[0].1,
+        second_guess: indices_and_confidence[1].0 as u8,
+        second_guess_confidence: *indices_and_confidence[1].1,
+    }
 }
