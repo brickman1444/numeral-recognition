@@ -3,33 +3,25 @@ use std::io::prelude::*;
 
 const NEURAL_NETWORK_JSON_FILENAME: &str = "network.json";
 
-fn main() -> std::result::Result<(), String> {
+fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
     println!("Arguments: {:?}", args);
 
     if args.len() < 2 {
-        return make_error_str("An argument wasn't passed in. Run with 'cargo run -- <argument>");
+        return Err("An argument wasn't passed in. Run with 'cargo run -- <argument>".into());
     }
 
     match args[1].as_str() {
         "train" => train(),
         "test" => test(),
-        _ => return make_error(std::format!("Didn't recognize argument: {0}", args[1])),
+        _ => return Err(std::format!("Didn't recognize argument: {0}", args[1])),
     }
 
     Ok(())
 }
 
-fn make_error_str(message: &'static str) -> std::result::Result<(), String> {
-    std::result::Result::Err(std::string::String::from(message))
-}
-
-fn make_error(message: std::string::String) -> std::result::Result<(), String> {
-    std::result::Result::Err(message)
-}
-
 fn train() {
-    std::println!("Load training data");
+    println!("Load training data");
     let examples = load_data(
         "data/train-labels.idx1-ubyte",
         "data/train-images.idx3-ubyte",
@@ -41,7 +33,7 @@ fn train() {
         nn::Activation::Sigmoid,
     );
 
-    std::println!("Begin training");
+    println!("Begin training");
 
     let now = std::time::Instant::now();
 
@@ -53,7 +45,7 @@ fn train() {
         .go();
 
     let elapsed_time = now.elapsed();
-    std::println!(
+    println!(
         "Training finished. took {} seconds.",
         elapsed_time.as_secs()
     );
@@ -64,19 +56,19 @@ fn train() {
 }
 
 fn test() {
-    std::println!("Load test data");
+    println!("Load test data");
     let examples = load_data("data/t10k-labels.idx1-ubyte", "data/t10k-images.idx3-ubyte");
 
-    std::println!("Load neural network json");
+    println!("Load neural network json");
     let mut f = std::fs::File::open(NEURAL_NETWORK_JSON_FILENAME).unwrap();
 
-    let mut nn_json = std::string::String::new();
+    let mut nn_json = String::new();
     f.read_to_string(&mut nn_json).unwrap();
 
-    std::println!("Load neural network from json");
+    println!("Load neural network from json");
     let neural_network = nn::NN::from_json(nn_json.as_str());
 
-    std::println!("Begin test");
+    println!("Begin test");
 
     let mut fails = 0;
 
@@ -88,7 +80,7 @@ fn test() {
         }
     }
 
-    std::println!(
+    println!(
         "Finished test. {0} cases. {1} failures.",
         examples.len(),
         fails
@@ -98,13 +90,13 @@ fn test() {
 fn load_data(
     labels_file_path: &str,
     images_file_path: &str,
-) -> std::vec::Vec<(std::vec::Vec<f64>, std::vec::Vec<f64>)> {
-    std::println!("Open files");
+) -> Vec<(Vec<f64>, Vec<f64>)> {
+    println!("Open files");
     let labels = open_labels(labels_file_path);
 
     let image_bytes = open_images(images_file_path);
 
-    std::println!("Transform data");
+    println!("Transform data");
 
     labels
         .iter()
@@ -124,7 +116,7 @@ fn load_data(
         .collect()
 }
 
-fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
+fn make_output_vector_from_label(label: u8) -> Vec<f64> {
     let mut vector = vec![0f64; 10];
     vector[label as usize] = 1f64;
     vector

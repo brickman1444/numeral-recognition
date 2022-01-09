@@ -4,10 +4,10 @@ pub const PIXELS_PER_IMAGE: usize = 28 * 28;
 
 #[wasm_bindgen]
 pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
-    std::println!("Load neural network from json");
+    println!("Load neural network from json");
     let neural_network = nn::NN::from_json(neural_network_json_text);
 
-    let mut input_vec = std::vec::Vec::with_capacity(PIXELS_PER_IMAGE);
+    let mut input_vec = Vec::with_capacity(PIXELS_PER_IMAGE);
     for item in image_bytes.iter().take(PIXELS_PER_IMAGE) {
         input_vec.push((*item as f64) / 255f64);
     }
