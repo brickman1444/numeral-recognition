@@ -70,19 +70,32 @@ fn test() {
 
     println!("Begin test");
 
+    let mut first_guess_successes = 0;
+    let mut second_guess_successes = 0;
     let mut fails = 0;
 
     for test_pair in &examples {
         let result = neural_network.run(test_pair.0.as_slice());
 
-        if evaluate_label_vector(&result) != evaluate_label_vector(&test_pair.1) {
+        let actual = evaluate_label_vector(&result);
+        let expected = evaluate_label_vector(&test_pair.1);
+
+        if actual.first_guess == expected.first_guess {
+            first_guess_successes += 1;
+        }
+        else if actual.second_guess == expected.first_guess {
+            second_guess_successes += 1;
+        }
+        else {
             fails += 1;
         }
     }
 
     println!(
-        "Finished test. {0} cases. {1} failures.",
+        "Finished test. {0} cases. {1} Correct First Guesses {2} Correct Second Guesses {3} failures.",
         examples.len(),
+        first_guess_successes,
+        second_guess_successes,
         fails
     );
 }
