@@ -82,11 +82,9 @@ fn test() {
 
         if actual.first_guess == expected.first_guess {
             first_guess_successes += 1;
-        }
-        else if actual.second_guess == expected.first_guess {
+        } else if actual.second_guess == expected.first_guess {
             second_guess_successes += 1;
-        }
-        else {
+        } else {
             fails += 1;
         }
     }

@@ -27,7 +27,6 @@ pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> Recognit
 }
 
 pub fn evaluate_label_vector(label_vec: &[f64]) -> RecognitionResults {
-
     let mut indices_and_confidence: Vec<(usize, &f64)> = label_vec.iter().enumerate().collect();
 
     indices_and_confidence.sort_by(|a, b| b.1.partial_cmp(a.1).unwrap());
