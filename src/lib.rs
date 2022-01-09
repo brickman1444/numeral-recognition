@@ -7,10 +7,11 @@ pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
     println!("Load neural network from json");
     let neural_network = nn::NN::from_json(neural_network_json_text);
 
-    let mut input_vec = Vec::with_capacity(PIXELS_PER_IMAGE);
-    for item in image_bytes.iter().take(PIXELS_PER_IMAGE) {
-        input_vec.push((*item as f64) / 255f64);
-    }
+    let input_vec: Vec<f64> = image_bytes
+        .iter()
+        .take(PIXELS_PER_IMAGE)
+        .map(|item| (*item as f64) / 255f64)
+        .collect();
 
     let result_vector = neural_network.run(input_vec.as_slice());
 

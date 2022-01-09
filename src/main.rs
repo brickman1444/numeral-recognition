@@ -87,10 +87,7 @@ fn test() {
     );
 }
 
-fn load_data(
-    labels_file_path: &str,
-    images_file_path: &str,
-) -> Vec<(Vec<f64>, Vec<f64>)> {
+fn load_data(labels_file_path: &str, images_file_path: &str) -> Vec<(Vec<f64>, Vec<f64>)> {
     println!("Open files");
     let labels = open_labels(labels_file_path);
 
