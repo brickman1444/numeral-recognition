@@ -105,22 +105,25 @@ fn load_data(
     let image_bytes = open_images(images_file_path);
 
     std::println!("Transform data");
-    let mut examples: std::vec::Vec<(std::vec::Vec<f64>, std::vec::Vec<f64>)> =
-        std::vec::Vec::with_capacity(labels.len());
 
-    for (item_index, label) in labels.iter().enumerate() {
-        let image_start_index = item_index * PIXELS_PER_IMAGE;
-        let image_end_index = (item_index + 1) * PIXELS_PER_IMAGE;
+    labels
+        .iter()
+        .enumerate()
+        .map(|(item_index, label)|{
+            let image_start_index = item_index * PIXELS_PER_IMAGE;
+            let image_end_index = (item_index + 1) * PIXELS_PER_IMAGE;
+    
+            let image_vec = image_bytes[image_start_index..image_end_index]
+                .iter()
+                .map(|pixel|{
+                    (*pixel as f64) / 255f64
+                })
+                .collect();
 
-        let mut image_vec = std::vec::Vec::with_capacity(PIXELS_PER_IMAGE);
-        for pixel in &image_bytes[image_start_index..image_end_index] {
-            image_vec.push((*pixel as f64) / 255f64);
-        }
-        let output_vector = make_output_vector_from_label(*label);
-        examples.push((image_vec, output_vector));
-    }
-
-    examples
+            let output_vector = make_output_vector_from_label(*label);
+            (image_vec, output_vector)
+        })
+        .collect()
 }
 
 fn make_output_vector_from_label(label: u8) -> std::vec::Vec<f64> {
