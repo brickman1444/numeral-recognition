@@ -109,15 +109,13 @@ fn load_data(
     labels
         .iter()
         .enumerate()
-        .map(|(item_index, label)|{
+        .map(|(item_index, label)| {
             let image_start_index = item_index * PIXELS_PER_IMAGE;
             let image_end_index = (item_index + 1) * PIXELS_PER_IMAGE;
-    
+
             let image_vec = image_bytes[image_start_index..image_end_index]
                 .iter()
-                .map(|pixel|{
-                    (*pixel as f64) / 255f64
-                })
+                .map(|pixel| (*pixel as f64) / 255f64)
                 .collect();
 
             let output_vector = make_output_vector_from_label(*label);
