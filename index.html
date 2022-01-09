@@ -113,7 +113,9 @@
             input_data[Math.floor(byte_index / 4)] = rgba_bytes_array[byte_index];
         }
 
-        let text = "Recognized Numeral: " + wasm_recognize(neural_network_json_text, input_data);
+        let results = wasm_recognize(neural_network_json_text, input_data);
+        console.log(results);
+        let text = "Recognized Numeral: " + results.first_guess;
         document.getElementById('recognized-numeral').textContent = text;
     }
     </script>

@@ -3,7 +3,15 @@ use wasm_bindgen::prelude::*;
 pub const PIXELS_PER_IMAGE: usize = 28 * 28;
 
 #[wasm_bindgen]
-pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
+pub struct RecognitionResults {
+    pub first_guess: u8,
+    pub first_guess_confidence: f64,
+    pub second_guess: u8,
+    pub second_guess_confidence: f64,
+}
+
+#[wasm_bindgen]
+pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> RecognitionResults {
     println!("Load neural network from json");
     let neural_network = nn::NN::from_json(neural_network_json_text);
 
@@ -15,7 +23,14 @@ pub fn recognize(neural_network_json_text: &str, image_bytes: &[u8]) -> u8 {
 
     let result_vector = neural_network.run(input_vec.as_slice());
 
-    evaluate_label_vector(&result_vector)
+    let first_guess = evaluate_label_vector(&result_vector);
+
+    RecognitionResults {
+        first_guess: first_guess,
+        first_guess_confidence: 0.5f64,
+        second_guess: 10,
+        second_guess_confidence: 0.2f64,
+    }
 }
 
 pub fn evaluate_label_vector(label_vec: &[f64]) -> u8 {
