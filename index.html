@@ -105,6 +105,10 @@
         }
     }
 
+    function confidence_value_to_string(number) {
+        return (number * 100).toFixed(2) + "%";
+    }
+
     function recognize() {
         let imageData = ctx.getImageData(0, 0, w, h);
         let rgba_bytes_array = imageData.data;
@@ -119,9 +123,9 @@
         let results = wasm_recognize(neural_network_json_text, input_data);
         console.log(results);
         document.getElementById('first-guess').textContent = results.first_guess;
-        document.getElementById('first-guess-confidence').textContent = results.first_guess_confidence.toFixed(2);
+        document.getElementById('first-guess-confidence').textContent = confidence_value_to_string(results.first_guess_confidence);
         document.getElementById('second-guess').textContent = results.second_guess;
-        document.getElementById('second-guess-confidence').textContent = results.second_guess_confidence.toFixed(2);
+        document.getElementById('second-guess-confidence').textContent = confidence_value_to_string(results.second_guess_confidence);
     }
     </script>
     <head>
